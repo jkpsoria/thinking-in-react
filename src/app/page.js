@@ -18,7 +18,7 @@ function ProductRow({ product }) {
 }
 
 function ProductCategoryRow({ category }) {
-  return <th colSpan="2">{category}</th>;
+  return <th colSpan="2">{category}</th>; 
 }
 
 function ProductTable({ products }) {
