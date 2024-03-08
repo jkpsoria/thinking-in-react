@@ -12,24 +12,34 @@ td{
     text-align: center;
 }
 
-th {
-    text-align: center;
-}
 
-td, th {
-    border: 1px solid ;
-    padding: 2% 
-    
-}
 
 tr{
     padding: 0 10%;
 }
 
-table {
-    border-spacing: 1;
-}
-
 input {
     margin: auto;
 }
+
+/* Add this CSS to your component or global styles */
+
+table {
+    
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid;
+  }
+  
+  th h5 {
+    margin: 0; /* Remove margin to prevent unwanted spacing */
+  }
+  
+.thead {
+    text-align: center;
+}
+  

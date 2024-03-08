@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 function ProductRow({ product }) {
   const name = product.stocked ? (
     product.name
@@ -18,14 +22,26 @@ function ProductRow({ product }) {
 }
 
 function ProductCategoryRow({ category }) {
-  return <th colSpan="2">{category}</th>; 
+  return (
+    <tr>
+      <th colSpan="2" className="thead">
+        {category}
+      </th>
+    </tr>
+  );
 }
 
-function ProductTable({ products }) {
+function ProductTable({ products, filterText, inStocked }) {
   const rows = [];
   let lastCategory = null;
 
-  products.forEach((product) => {
+  const filteredProducts = products
+    .filter((product) =>
+      product.name.toLowerCase().includes(filterText.toLowerCase())
+    )
+    .filter((product) => !inStocked || (inStocked && product.stocked));
+
+  filteredProducts.forEach((product) => {
     if (product.category !== lastCategory) {
       rows.push(
         <ProductCategoryRow
@@ -33,9 +49,9 @@ function ProductTable({ products }) {
           key={product.category}
         />
       );
+      lastCategory = product.category;
     }
     rows.push(<ProductRow product={product} key={product.name} />);
-    lastCategory = product.category;
   });
 
   return (
@@ -43,10 +59,10 @@ function ProductTable({ products }) {
       <table>
         <thead>
           <tr>
-            <th>
+            <th className="thead">
               <h5>Name</h5>
             </th>
-            <th>
+            <th className="thead">
               <h5>Price</h5>
             </th>
           </tr>
@@ -57,22 +73,45 @@ function ProductTable({ products }) {
   );
 }
 
-function SearchBar() {
+function SearchBar({ filterText, inStocked, onFilterChange, onStockChange }) {
   return (
     <form>
-      <input type="text" placeholder="Search..." /> <br></br>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={filterText}
+        onChange={(e) => onFilterChange(e.target.value)}
+      />{" "}
+      <br></br>
       <label>
-        <input type="checkbox" /> Only show products in stock
+        <input
+          type="checkbox"
+          checked={inStocked}
+          onChange={(e) => onStockChange(e.target.checked)}
+        />{" "}
+        Only show products in stock
       </label>
     </form>
   );
 }
 
-function FilterableProductTable() {
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState("");
+  const [inStocked, setInStocked] = useState();
+
   return (
     <>
-      <SearchBar />
-      <ProductTable products={PRODUCTS} />
+      <SearchBar
+        filterText={filterText}
+        inStocked={inStocked}
+        onFilterChange={setFilterText}
+        onStockChange={setInStocked}
+      />
+      <ProductTable
+        products={PRODUCTS}
+        filterText={filterText}
+        inStocked={inStocked}
+      />
     </>
   );
 }
@@ -91,7 +130,7 @@ export default function Home() {
     <>
       <div className="main">
         <h1>Product Search</h1>
-        <FilterableProductTable />
+        <FilterableProductTable products={PRODUCTS} />
       </div>
     </>
   );
